@@ -1,0 +1,112 @@
+<div class="relative">
+  <svg
+    class="w-full touch-none"
+    [attr.viewBox]="'0 0 ' + w + ' ' + h"
+    role="img"
+    [attr.aria-label]="label()"
+    (pointermove)="onMove($event)"
+    (pointerleave)="onLeave()"
+  >
+    <defs>
+      <linearGradient id="area-fill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0d9488" stop-opacity="0.22" />
+        <stop offset="100%" stop-color="#0d9488" stop-opacity="0" />
+      </linearGradient>
+    </defs>
+
+    @for (t of ticks(); track t.label) {
+      <line
+        [attr.x1]="plotLeft"
+        [attr.x2]="plotRight"
+        [attr.y1]="t.y"
+        [attr.y2]="t.y"
+        stroke="#eef2f6"
+        stroke-width="1"
+      />
+      <text
+        [attr.x]="plotLeft - 8"
+        [attr.y]="t.y + 3"
+        text-anchor="end"
+        fill="#94a3b8"
+        font-size="11"
+        style="font-variant-numeric: tabular-nums"
+      >
+        {{ t.label }}
+      </text>
+    }
+
+    <path [attr.d]="areaPath()" fill="url(#area-fill)" />
+    <path
+      [attr.d]="linePath()"
+      fill="none"
+      stroke="#0d9488"
+      stroke-width="2.5"
+      stroke-linejoin="round"
+      stroke-linecap="round"
+    />
+
+    @for (p of points(); track p.label) {
+      <text
+        [attr.x]="p.x"
+        [attr.y]="h - 8"
+        text-anchor="middle"
+        fill="#94a3b8"
+        font-size="11"
+      >
+        {{ p.label }}
+      </text>
+    }
+
+    @if (hovered(); as hp) {
+      <line
+        [attr.x1]="hp.x"
+        [attr.x2]="hp.x"
+        [attr.y1]="plotTop"
+        [attr.y2]="baseline"
+        stroke="#94a3b8"
+        stroke-width="1"
+        stroke-dasharray="3 3"
+      />
+      <circle
+        [attr.cx]="hp.x"
+        [attr.cy]="hp.y"
+        r="4.5"
+        fill="#ffffff"
+        stroke="#0d9488"
+        stroke-width="2.5"
+      />
+    }
+  </svg>
+
+  @if (hovered(); as hp) {
+    <div
+      class="pointer-events-none absolute top-0 z-10 -translate-x-1/2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-center shadow-md"
+      [style.left.%]="tooltipLeft(hp)"
+    >
+      <p class="text-xs font-medium text-slate-500">{{ hp.label }}</p>
+      <p class="text-sm font-semibold text-slate-900 tabular-nums">
+        {{ hp.display }}
+      </p>
+    </div>
+  }
+
+  <table class="sr-only">
+    <caption>
+      {{ label() }}
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Period</th>
+        <th scope="col">Revenue</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (p of points(); track p.label) {
+        <tr>
+          <th scope="row">{{ p.label }}</th>
+          <td>{{ p.display }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

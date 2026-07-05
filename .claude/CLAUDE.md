@@ -27,8 +27,8 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Keep components small and focused on a single responsibility
 - Use `input()` and `output()` functions instead of decorators
 - Use `computed()` for derived state
-- Prefer inline templates for small components
-- Prefer Reactive forms instead of Template-driven ones
+- Keep the template in a separate `.html` file via `templateUrl` (and styles via `styleUrl`), using paths relative to the component `.ts` file. Do NOT use inline `template:` strings, even for small components.
+- Use Signal Forms (`form()`, validators, and the `[formField]` binding from `@angular/forms/signals`) for new forms — they keep form state as signals, consistent with the rest of the app. Bind fields with `[formField]="myForm.fieldName"`; the directive drives `min`/`max`/`minLength`/`required` from the schema validators, so do NOT also set those attributes manually. On the `<form>` element, use the native `(submit)="$event.preventDefault(); onSubmit()"` — do NOT use `(ngSubmit)`, which only exists on `ReactiveFormsModule`/`FormsModule`'s `NgForm` (absent with Signal Forms), so the browser would do a native GET submit and leak field values (incl. passwords) into the URL. Fall back to Reactive Forms only for interop with legacy `ControlValueAccessor`-based controls. Do NOT use Template-driven forms (`ngModel`).
 - Do NOT use `ngClass`, use `class` bindings instead
 - Do NOT use `ngStyle`, use `style` bindings instead
 - When using external templates/styles, use paths relative to the component TS file.

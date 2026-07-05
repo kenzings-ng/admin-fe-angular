@@ -1,0 +1,101 @@
+<div class="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+  <div class="w-full max-w-md">
+    <div class="mb-8 text-center">
+      <span
+        class="mb-4 inline-grid h-12 w-12 place-items-center rounded-xl bg-teal-600 text-lg font-bold text-white"
+        aria-hidden="true"
+      >
+        S
+      </span>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">
+        ShopAdmin
+      </h1>
+      <p class="mt-1 text-sm text-slate-500">
+        Sign in to manage your store
+      </p>
+    </div>
+
+    <form
+      (submit)="$event.preventDefault(); submit()"
+      class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
+      novalidate
+    >
+      <div class="mb-5">
+        <label
+          for="email"
+          class="mb-1.5 block text-sm font-medium text-slate-700"
+        >
+          Email
+        </label>
+        <input
+          id="email"
+          type="email"
+          [formField]="loginForm.email"
+          autocomplete="email"
+          [attr.aria-invalid]="isInvalid(loginForm.email())"
+          [attr.aria-describedby]="
+            isInvalid(loginForm.email()) ? 'email-error' : null
+          "
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+          placeholder="you@shop.com"
+        />
+        @if (isInvalid(loginForm.email())) {
+          <p id="email-error" class="mt-1 text-xs text-red-600">
+            Enter a valid email address.
+          </p>
+        }
+      </div>
+
+      <div class="mb-6">
+        <label
+          for="password"
+          class="mb-1.5 block text-sm font-medium text-slate-700"
+        >
+          Password
+        </label>
+        <input
+          id="password"
+          type="password"
+          [formField]="loginForm.password"
+          autocomplete="current-password"
+          [attr.aria-invalid]="isInvalid(loginForm.password())"
+          [attr.aria-describedby]="
+            isInvalid(loginForm.password()) ? 'password-error' : null
+          "
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+          placeholder="••••••••"
+        />
+        @if (isInvalid(loginForm.password())) {
+          <p id="password-error" class="mt-1 text-xs text-red-600">
+            Password must be at least 6 characters.
+          </p>
+        }
+      </div>
+
+      <div class="mb-6 flex items-center justify-between">
+        <label class="flex items-center gap-2 text-sm text-slate-600">
+          <input
+            type="checkbox"
+            [formField]="loginForm.rememberMe"
+            class="h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+          />
+          Remember me
+        </label>
+        <a
+          routerLink="/forgot-password"
+          class="text-sm font-medium text-teal-700 hover:text-teal-800"
+        >
+          Forgot password?
+        </a>
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="loading()"
+        class="flex w-full items-center justify-center rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {{ loading() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<div
+  class="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 p-4"
+  (click)="onBackdrop($event)"
+>
+  <div
+    class="w-full rounded-2xl bg-white shadow-xl"
+    [class]="sizeClass()"
+    [attr.role]="role()"
+    aria-modal="true"
+    [attr.aria-labelledby]="title() ? headingId : null"
+    [attr.aria-label]="title() ? null : ariaLabel()"
+  >
+    @if (title(); as heading) {
+      <div
+        class="flex items-center justify-between border-b border-slate-200 px-6 py-4"
+      >
+        <h2 [id]="headingId" class="text-lg font-semibold text-slate-900">
+          {{ heading }}
+        </h2>
+        @if (dismissible()) {
+          <button
+            type="button"
+            class="rounded-lg p-1 text-xl leading-none text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+            (click)="dismiss.emit()"
+            aria-label="Close dialog"
+          >
+            &times;
+          </button>
+        }
+      </div>
+    }
+    <ng-content />
+  </div>
+</div>

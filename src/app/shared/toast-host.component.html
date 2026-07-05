@@ -1,0 +1,26 @@
+<div
+  class="pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-4"
+  aria-live="polite"
+  aria-atomic="true"
+>
+  @for (toast of toasts(); track toast.id) {
+    <div
+      role="status"
+      class="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-lg border px-4 py-3 shadow-lg"
+      [class]="styles[toast.kind]"
+    >
+      <span class="mt-0.5 text-sm font-semibold" aria-hidden="true">
+        {{ icons[toast.kind] }}
+      </span>
+      <p class="flex-1 text-sm leading-snug">{{ toast.message }}</p>
+      <button
+        type="button"
+        class="rounded p-0.5 text-lg leading-none opacity-70 hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-current"
+        (click)="toastService.dismiss(toast.id)"
+        aria-label="Dismiss notification"
+      >
+        &times;
+      </button>
+    </div>
+  }
+</div>

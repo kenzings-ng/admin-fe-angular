@@ -1,0 +1,199 @@
+<div class="mx-auto max-w-3xl">
+  <header class="mb-6">
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">
+      Settings
+    </h1>
+    <p class="mt-1 text-sm text-slate-500">
+      Manage your store, profile and security.
+    </p>
+  </header>
+
+  <div
+    class="mb-5 flex gap-1 border-b border-slate-200"
+    role="tablist"
+    aria-label="Settings sections"
+  >
+    @for (t of tabs; track t.key) {
+      <button
+        type="button"
+        role="tab"
+        [id]="'tab-' + t.key"
+        [attr.aria-selected]="tab() === t.key"
+        [attr.tabindex]="tab() === t.key ? 0 : -1"
+        class="-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+        [class]="
+          tab() === t.key
+            ? 'border-teal-600 text-teal-700'
+            : 'border-transparent text-slate-500 hover:text-slate-700'
+        "
+        (click)="tab.set(t.key)"
+      >
+        {{ t.label }}
+      </button>
+    }
+  </div>
+
+  <!-- Store -->
+  @if (tab() === 'store') {
+    <form
+      role="tabpanel"
+      aria-labelledby="tab-store"
+      (submit)="$event.preventDefault(); saveStore()"
+      class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      novalidate
+    >
+      <app-form-field
+        label="Store name"
+        for="s-name"
+        class="mb-4"
+        [required]="true"
+        [error]="isInvalid(storeForm.storeName()) ? 'Store name is required.' : null"
+      >
+        <input id="s-name" type="text" appInput [formField]="storeForm.storeName" />
+      </app-form-field>
+
+      <app-form-field
+        label="Support email"
+        for="s-email"
+        class="mb-4"
+        [required]="true"
+        [error]="isInvalid(storeForm.supportEmail()) ? 'Enter a valid email.' : null"
+      >
+        <input id="s-email" type="email" appInput [formField]="storeForm.supportEmail" />
+      </app-form-field>
+
+      <div class="mb-6 grid grid-cols-2 gap-4">
+        <app-form-field label="Currency" for="s-currency">
+          <select
+            id="s-currency"
+            [formField]="storeForm.currency"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+          >
+            @for (c of currencies; track c) {
+              <option [value]="c">{{ c }}</option>
+            }
+          </select>
+        </app-form-field>
+        <app-form-field label="Weight unit" for="s-weight">
+          <select
+            id="s-weight"
+            [formField]="storeForm.weightUnit"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+          >
+            @for (u of weightUnits; track u) {
+              <option [value]="u">{{ u }}</option>
+            }
+          </select>
+        </app-form-field>
+      </div>
+
+      <div class="flex justify-end">
+        <button app-button variant="primary" type="submit" [disabled]="savingStore()">
+          {{ savingStore() ? 'Saving…' : 'Save changes' }}
+        </button>
+      </div>
+    </form>
+  }
+
+  <!-- Profile -->
+  @if (tab() === 'profile') {
+    <form
+      role="tabpanel"
+      aria-labelledby="tab-profile"
+      (submit)="$event.preventDefault(); saveProfile()"
+      class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      novalidate
+    >
+      <app-form-field
+        label="Name"
+        for="p-name"
+        class="mb-4"
+        [required]="true"
+        [error]="isInvalid(profileForm.name()) ? 'Name is required.' : null"
+      >
+        <input id="p-name" type="text" appInput [formField]="profileForm.name" />
+      </app-form-field>
+
+      <app-form-field
+        label="Email"
+        for="p-email"
+        class="mb-6"
+        [required]="true"
+        [error]="isInvalid(profileForm.email()) ? 'Enter a valid email.' : null"
+      >
+        <input id="p-email" type="email" appInput [formField]="profileForm.email" />
+      </app-form-field>
+
+      <div class="flex justify-end">
+        <button app-button variant="primary" type="submit" [disabled]="savingProfile()">
+          {{ savingProfile() ? 'Saving…' : 'Save changes' }}
+        </button>
+      </div>
+    </form>
+  }
+
+  <!-- Security -->
+  @if (tab() === 'security') {
+    <form
+      role="tabpanel"
+      aria-labelledby="tab-security"
+      (submit)="$event.preventDefault(); saveSecurity()"
+      class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      novalidate
+    >
+      <app-form-field
+        label="Current password"
+        for="sec-current"
+        class="mb-4"
+        [required]="true"
+        [error]="isInvalid(securityForm.current()) ? 'Current password is required.' : null"
+      >
+        <input
+          id="sec-current"
+          type="password"
+          autocomplete="current-password"
+          appInput
+          [formField]="securityForm.current"
+        />
+      </app-form-field>
+
+      <app-form-field
+        label="New password"
+        for="sec-next"
+        class="mb-4"
+        [required]="true"
+        [error]="isInvalid(securityForm.next()) ? 'At least 8 characters.' : null"
+      >
+        <input
+          id="sec-next"
+          type="password"
+          autocomplete="new-password"
+          appInput
+          [formField]="securityForm.next"
+        />
+      </app-form-field>
+
+      <app-form-field
+        label="Confirm new password"
+        for="sec-confirm"
+        class="mb-6"
+        [required]="true"
+        [error]="isInvalid(securityForm.confirm()) ? 'Please confirm the password.' : null"
+      >
+        <input
+          id="sec-confirm"
+          type="password"
+          autocomplete="new-password"
+          appInput
+          [formField]="securityForm.confirm"
+        />
+      </app-form-field>
+
+      <div class="flex justify-end">
+        <button app-button variant="primary" type="submit" [disabled]="savingSecurity()">
+          {{ savingSecurity() ? 'Saving…' : 'Update password' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

@@ -1,0 +1,64 @@
+<app-modal
+  [title]="editing() ? 'Edit category' : 'New category'"
+  size="md"
+  (dismiss)="cancel.emit()"
+>
+  <form (submit)="$event.preventDefault(); submit()" class="p-6" novalidate>
+    <app-form-field
+      label="Name"
+      for="cf-name"
+      class="mb-4"
+      [required]="true"
+      [error]="isInvalid(cform.name()) ? 'Name is required.' : null"
+    >
+      <input
+        id="cf-name"
+        type="text"
+        appInput
+        [formField]="cform.name"
+        (input)="onNameInput()"
+        [attr.aria-invalid]="isInvalid(cform.name())"
+      />
+    </app-form-field>
+
+    <app-form-field
+      label="Slug"
+      for="cf-slug"
+      class="mb-4"
+      [required]="true"
+      [error]="isInvalid(cform.slug()) ? 'Slug is required.' : null"
+    >
+      <input
+        id="cf-slug"
+        type="text"
+        appInput
+        [formField]="cform.slug"
+        [attr.aria-invalid]="isInvalid(cform.slug())"
+      />
+    </app-form-field>
+
+    <app-form-field label="Description" for="cf-desc" class="mb-6">
+      <textarea
+        id="cf-desc"
+        rows="3"
+        appInput
+        class="resize-y"
+        [formField]="cform.description"
+      ></textarea>
+    </app-form-field>
+
+    <div class="flex justify-end gap-3">
+      <button app-button variant="secondary" (click)="cancel.emit()">
+        Cancel
+      </button>
+      <button
+        app-button
+        variant="primary"
+        type="submit"
+        [disabled]="saving()"
+      >
+        {{ saving() ? 'Saving…' : editing() ? 'Save changes' : 'Create category' }}
+      </button>
+    </div>
+  </form>
+</app-modal>

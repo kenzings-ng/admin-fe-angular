@@ -1,6 +1,27 @@
-# AdminFe
+# ShopAdmin
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.1.
+Admin panel for the e-commerce store, built with Angular 22 (standalone components, signals, Tailwind CSS v4). It talks to the NestJS + JWT API documented in the API reference.
+
+## Features
+
+- **JWT auth** — email/password sign-in; the token is stored in `localStorage` and attached to every request by an HTTP interceptor. A 401 clears the session and returns to the login page.
+- **Admin-only access** — a route guard requires an authenticated account with `role: "admin"`. Non-admins are signed out with a message.
+- **Dashboard** — catalog KPIs (product count, units in stock, inventory value) plus a low-stock table.
+- **Products** — searchable table with create, edit, and delete (with confirmation), backed by `/products`.
+
+## Configuration
+
+The API base URL lives in `src/environments/environment.ts` (defaults to `http://localhost:3000`). Make sure the backend is running there before signing in.
+
+## Project structure
+
+```
+src/app/
+  core/         models, services (auth, product, token, toast), guards, HTTP interceptor
+  layout/       app shell (sidebar + topbar)
+  features/     auth (login), dashboard, products (list + form)
+  shared/       toast host
+```
 
 ## Development server
 

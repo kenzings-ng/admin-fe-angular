@@ -1,0 +1,22 @@
+<ul class="flex flex-col gap-3">
+  @for (bar of bars(); track bar.label) {
+    <li class="grid grid-cols-[7.5rem_1fr_auto] items-center gap-3">
+      <span class="truncate text-sm font-medium text-slate-600">
+        {{ bar.label }}
+      </span>
+      <span
+        class="h-2.5 overflow-hidden rounded-full bg-slate-100"
+        role="img"
+        [attr.aria-label]="bar.label + ': ' + bar.display"
+      >
+        <span
+          class="block h-full rounded-full bg-teal-500"
+          [style.width.%]="bar.pct"
+        ></span>
+      </span>
+      <span class="w-16 text-right text-sm font-semibold text-slate-900 tabular-nums">
+        {{ bar.display }}
+      </span>
+    </li>
+  }
+</ul>
