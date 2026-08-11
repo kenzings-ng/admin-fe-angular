@@ -1,3 +1,86 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toast-enter {
+  animation: toast-in 0.18s ease-out;
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.backdrop-enter {
+  animation: backdrop-in 0.15s ease-out;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-enter {
+  animation: modal-in 0.15s ease-out;
+}
+
+@keyframes modal-in-mobile {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 639.98px) {
+  .modal-enter {
+    animation: modal-in-mobile 0.2s ease-out;
+  }
+}
+
+/* Re-skin CKEditor to match the app's form controls; the outer
+   .ck-content-wrapper div supplies the visible border/focus ring. */
+.ck-content-wrapper {
+  --ck-border-radius: 0;
+  --ck-color-base-border: transparent;
+  --ck-color-focus-border: transparent;
+  --ck-focus-ring: 0 0 0 0 transparent;
+  --ck-font-size-base: 13.5px;
+}
+
+.ck-content-wrapper .ck.ck-toolbar {
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.ck-content-wrapper .ck.ck-editor__editable {
+  min-height: 8rem;
+  padding: 0.5rem 0.75rem;
+  border: none !important;
+  box-shadow: none !important;
+}

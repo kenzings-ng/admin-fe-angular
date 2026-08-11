@@ -38,13 +38,7 @@
     </app-form-field>
 
     <app-form-field label="Description" for="cf-desc" class="mb-6">
-      <textarea
-        id="cf-desc"
-        rows="3"
-        appInput
-        class="resize-y"
-        [formField]="cform.description"
-      ></textarea>
+      <app-rich-text-editor id="cf-desc" [formField]="cform.description" />
     </app-form-field>
 
     <div class="flex justify-end gap-3">

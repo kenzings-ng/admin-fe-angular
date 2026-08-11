@@ -91,6 +91,22 @@ export const routes: Routes = [
         title: 'Categories · Admin',
       },
       {
+        path: 'transactions',
+        loadComponent: () =>
+          import('./features/transactions/transaction-list.component').then(
+            (m) => m.TransactionListComponent,
+          ),
+        title: 'Transactions · Admin',
+      },
+      {
+        path: 'messages',
+        loadComponent: () =>
+          import('./features/messages/message-list.component').then(
+            (m) => m.MessageListComponent,
+          ),
+        title: 'Messages · Admin',
+      },
+      {
         path: 'settings',
         loadComponent: () =>
           import('./features/settings/settings.component').then(

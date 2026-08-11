@@ -1,9 +1,13 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   input,
   output,
+  viewChild,
 } from '@angular/core';
+import { IconComponent } from './icon.component';
 
 let nextId = 0;
 
@@ -21,9 +25,13 @@ let nextId = 0;
 @Component({
   selector: 'app-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IconComponent],
   templateUrl: './modal.component.html',
+  host: {
+    '(document:keydown.escape)': 'onEscape()',
+  },
 })
-export class ModalComponent {
+export class ModalComponent implements AfterViewInit {
   readonly title = input<string>();
   /** Used as the dialog's accessible name when no `title` is shown. */
   readonly ariaLabel = input<string>();
@@ -37,6 +45,19 @@ export class ModalComponent {
   readonly dismiss = output<void>();
 
   protected readonly headingId = `app-modal-title-${nextId++}`;
+  private readonly panel = viewChild<ElementRef<HTMLElement>>('panel');
+
+  ngAfterViewInit(): void {
+    // Move focus into the dialog on open so keyboard/screen-reader users
+    // land inside it instead of on the now-hidden trigger behind it.
+    this.panel()?.nativeElement.focus();
+  }
+
+  protected onEscape(): void {
+    if (this.dismissible()) {
+      this.dismiss.emit();
+    }
+  }
 
   protected sizeClass(): string {
     switch (this.size()) {

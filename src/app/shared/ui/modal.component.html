@@ -1,18 +1,23 @@
 <div
-  class="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 p-4"
+  class="backdrop-enter fixed inset-0 z-40 flex items-end justify-center bg-slate-900/50 sm:items-center sm:p-4"
   (click)="onBackdrop($event)"
 >
   <div
-    class="w-full rounded-2xl bg-white shadow-xl"
+    #panel
+    tabindex="-1"
+    class="modal-enter flex max-h-[90vh] w-full flex-col rounded-t-2xl bg-white shadow-xl outline-none sm:max-h-[85vh] sm:rounded-2xl"
     [class]="sizeClass()"
     [attr.role]="role()"
     aria-modal="true"
     [attr.aria-labelledby]="title() ? headingId : null"
     [attr.aria-label]="title() ? null : ariaLabel()"
   >
+    <div class="flex justify-center pt-2 sm:hidden" aria-hidden="true">
+      <span class="h-1.5 w-10 rounded-full bg-slate-300"></span>
+    </div>
     @if (title(); as heading) {
       <div
-        class="flex items-center justify-between border-b border-slate-200 px-6 py-4"
+        class="flex shrink-0 items-center justify-between border-b border-slate-200 px-6 py-4"
       >
         <h2 [id]="headingId" class="text-lg font-semibold text-slate-900">
           {{ heading }}
@@ -20,15 +25,17 @@
         @if (dismissible()) {
           <button
             type="button"
-            class="rounded-lg p-1 text-xl leading-none text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+            class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
             (click)="dismiss.emit()"
             aria-label="Close dialog"
           >
-            &times;
+            <app-icon name="x" class="h-5 w-5" />
           </button>
         }
       </div>
     }
-    <ng-content />
+    <div class="overflow-y-auto">
+      <ng-content />
+    </div>
   </div>
 </div>

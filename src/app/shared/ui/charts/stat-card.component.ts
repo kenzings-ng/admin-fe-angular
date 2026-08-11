@@ -5,6 +5,7 @@ import {
   input,
 } from '@angular/core';
 import { Kpi, MetricFormat } from '../../../core/models/dashboard.model';
+import { IconComponent } from '../icon.component';
 
 const SPARK_W = 140;
 const SPARK_H = 40;
@@ -13,6 +14,7 @@ const SPARK_PAD = 3;
 @Component({
   selector: 'app-stat-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IconComponent],
   templateUrl: './stat-card.component.html',
 })
 export class StatCardComponent {

@@ -4,8 +4,10 @@ import { form, FormField, minLength, required } from '@angular/forms/signals';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
+import { AuthLayoutComponent } from '../../shared/ui/auth-layout.component';
 import { ButtonComponent } from '../../shared/ui/button.component';
 import { FormFieldComponent } from '../../shared/ui/form-field.component';
+import { IconComponent } from '../../shared/ui/icon.component';
 import { InputDirective } from '../../shared/ui/input.directive';
 
 type FieldValidity = {
@@ -23,6 +25,8 @@ type FieldValidity = {
     ButtonComponent,
     FormFieldComponent,
     InputDirective,
+    AuthLayoutComponent,
+    IconComponent,
   ],
   templateUrl: './reset-password.component.html',
 })

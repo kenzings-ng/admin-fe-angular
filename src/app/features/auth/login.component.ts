@@ -10,11 +10,12 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
+import { AuthLayoutComponent } from '../../shared/ui/auth-layout.component';
 
 @Component({
   selector: 'app-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormField, RouterLink],
+  imports: [FormField, RouterLink, AuthLayoutComponent],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {

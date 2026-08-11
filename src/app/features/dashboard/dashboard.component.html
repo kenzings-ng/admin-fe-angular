@@ -126,7 +126,33 @@
           View all →
         </a>
       </div>
-      <div class="overflow-x-auto">
+      <!-- Mobile card list -->
+      <div class="divide-y divide-slate-100 sm:hidden">
+        @for (o of d.recentOrders; track o.id) {
+          <div class="px-5 py-3">
+            <div class="flex items-center justify-between gap-3">
+              <span class="font-medium text-slate-900 tabular-nums">{{ o.id }}</span>
+              <span
+                class="rounded-full px-2.5 py-0.5 text-xs font-medium capitalize"
+                [class]="badgeClass(o.status)"
+              >
+                {{ o.status }}
+              </span>
+            </div>
+            <div class="mt-1 flex items-center justify-between gap-3 text-sm">
+              <span class="truncate text-slate-500">
+                {{ o.customer }} · {{ o.date | date: 'mediumDate' }}
+              </span>
+              <span class="shrink-0 font-semibold text-slate-900 tabular-nums">
+                {{ o.total | currency: 'USD' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Table (sm and up) -->
+      <div class="hidden overflow-x-auto sm:block">
         <table class="w-full min-w-[560px] text-left text-sm">
           <thead
             class="border-y border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"

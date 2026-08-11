@@ -14,6 +14,8 @@ import {
   OrderSummary,
 } from '../../core/models/order.model';
 import { OrderService } from '../../core/services/order.service';
+import { EmptyStateComponent } from '../../shared/ui/empty-state.component';
+import { IconComponent } from '../../shared/ui/icon.component';
 
 const STATUS_FILTERS: (OrderStatus | 'all')[] = [
   'all',
@@ -27,7 +29,13 @@ const STATUS_FILTERS: (OrderStatus | 'all')[] = [
 @Component({
   selector: 'app-order-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CurrencyPipe, DatePipe, RouterLink],
+  imports: [
+    CurrencyPipe,
+    DatePipe,
+    RouterLink,
+    EmptyStateComponent,
+    IconComponent,
+  ],
   templateUrl: './order-list.component.html',
 })
 export class OrderListComponent implements OnInit {

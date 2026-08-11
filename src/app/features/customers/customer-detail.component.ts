@@ -14,11 +14,12 @@ import {
   CustomerStatus,
 } from '../../core/models/customer.model';
 import { CustomerService } from '../../core/services/customer.service';
+import { IconComponent } from '../../shared/ui/icon.component';
 
 @Component({
   selector: 'app-customer-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CurrencyPipe, DatePipe, DecimalPipe, RouterLink],
+  imports: [CurrencyPipe, DatePipe, DecimalPipe, RouterLink, IconComponent],
   templateUrl: './customer-detail.component.html',
 })
 export class CustomerDetailComponent implements OnInit {

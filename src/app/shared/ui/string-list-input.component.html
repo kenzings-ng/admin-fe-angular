@@ -1,0 +1,42 @@
+<div class="space-y-2">
+  @if (value().length > 0) {
+    <ul class="space-y-1.5">
+      @for (item of value(); track $index) {
+        <li
+          class="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700"
+        >
+          <span class="min-w-0 flex-1 truncate">{{ item }}</span>
+          <button
+            type="button"
+            class="shrink-0 rounded p-0.5 text-slate-400 hover:bg-slate-200 hover:text-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+            [attr.aria-label]="'Remove ' + item"
+            (click)="remove($index)"
+          >
+            <app-icon name="x" class="h-3.5 w-3.5" />
+          </button>
+        </li>
+      }
+    </ul>
+  }
+
+  <div class="flex gap-2">
+    <input
+      type="text"
+      appInput
+      [placeholder]="placeholder()"
+      [value]="draft()"
+      (input)="onDraftInput($event)"
+      (keydown.enter)="$event.preventDefault(); add()"
+    />
+    <button
+      app-button
+      type="button"
+      variant="secondary"
+      size="sm"
+      aria-label="Add item"
+      (click)="add()"
+    >
+      <app-icon name="plus" class="h-4 w-4" />
+    </button>
+  </div>
+</div>

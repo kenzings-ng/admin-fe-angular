@@ -10,23 +10,30 @@
     </div>
     <button
       type="button"
-      class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+      class="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
       (click)="openCreate()"
     >
-      + New category
+      <app-icon name="plus" class="h-4 w-4" />
+      New category
     </button>
   </header>
 
   <div class="mb-4">
     <label for="cat-search" class="sr-only">Search categories</label>
-    <input
-      id="cat-search"
-      type="search"
-      [value]="query()"
-      (input)="onSearch($event)"
-      placeholder="Search by name or slug…"
-      class="w-full max-w-sm rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
-    />
+    <div class="relative max-w-sm">
+      <app-icon
+        name="search"
+        class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+      />
+      <input
+        id="cat-search"
+        type="search"
+        [value]="query()"
+        (input)="onSearch($event)"
+        placeholder="Search by name or slug…"
+        class="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm shadow-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+      />
+    </div>
   </div>
 
   @if (loading()) {
@@ -43,20 +50,75 @@
       {{ error() }}
     </div>
   } @else if (filtered().length === 0) {
-    <div
-      class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center"
-    >
-      <p class="text-sm text-slate-500">
-        @if (query()) {
-          No categories match “{{ query() }}”.
-        } @else {
-          No categories yet. Create your first one to get started.
-        }
-      </p>
-    </div>
+    @if (query()) {
+      <app-empty-state
+        icon="search"
+        title="No categories found"
+        [description]="'No categories match “' + query() + '”.'"
+      />
+    } @else {
+      <app-empty-state
+        icon="tag"
+        title="No categories yet"
+        description="Create your first one to get started."
+      >
+        <button
+          type="button"
+          class="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+          (click)="openCreate()"
+        >
+          <app-icon name="plus" class="h-4 w-4" />
+          New category
+        </button>
+      </app-empty-state>
+    }
   } @else {
+    <!-- Mobile card list -->
+    <div class="space-y-3 md:hidden">
+      @for (c of filtered(); track c._id) {
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="truncate font-medium text-slate-900">{{ c.name }}</p>
+              <code class="mt-0.5 inline-block rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-600">
+                {{ c.slug }}
+              </code>
+            </div>
+            <span class="shrink-0 text-sm font-semibold text-slate-900 tabular-nums">
+              {{ c.productCount | number }} products
+            </span>
+          </div>
+          @if (c.description) {
+            <p class="mt-2 line-clamp-2 text-xs text-slate-400">
+              {{ c.description | stripHtml }}
+            </p>
+          }
+          <p class="mt-2 text-xs text-slate-400">
+            Created {{ c.createdAt | date: 'mediumDate' }}
+          </p>
+          <div class="mt-3 flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <button
+              type="button"
+              class="rounded-md px-2.5 py-1 text-xs font-medium text-teal-700 hover:bg-teal-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+              (click)="openEdit(c)"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="rounded-md px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+              (click)="askDelete(c)"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Table (md and up) -->
     <div
-      class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm"
+      class="hidden overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm md:block"
     >
       <table class="w-full min-w-[640px] text-left text-sm">
         <thead
@@ -77,7 +139,7 @@
                 <p class="font-medium text-slate-900">{{ c.name }}</p>
                 @if (c.description) {
                   <p class="max-w-md truncate text-xs text-slate-400">
-                    {{ c.description }}
+                    {{ c.description | stripHtml }}
                   </p>
                 }
               </td>
@@ -126,19 +188,14 @@
 }
 
 @if (deleteTarget(); as target) {
-  <div
-    class="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 p-4"
+  <app-modal
+    [title]="'Delete category'"
+    [role]="'alertdialog'"
+    size="sm"
+    (dismiss)="deleteTarget.set(null)"
   >
-    <div
-      class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
-      role="alertdialog"
-      aria-modal="true"
-      aria-labelledby="cat-del-title"
-    >
-      <h2 id="cat-del-title" class="text-lg font-semibold text-slate-900">
-        Delete category
-      </h2>
-      <p class="mt-2 text-sm text-slate-500">
+    <div class="p-6">
+      <p class="text-sm text-slate-500">
         Are you sure you want to delete
         <span class="font-medium text-slate-700">{{ target.name }}</span>?
         Products in it will not be deleted.
@@ -161,5 +218,5 @@
         </button>
       </div>
     </div>
-  </div>
+  </app-modal>
 }

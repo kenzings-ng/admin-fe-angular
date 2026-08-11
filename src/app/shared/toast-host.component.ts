@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ToastService } from '../core/services/toast.service';
+import { IconComponent, IconName } from './ui/icon.component';
 
 @Component({
   selector: 'app-toast-host',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IconComponent],
   templateUrl: './toast-host.component.html',
 })
 export class ToastHostComponent {
@@ -16,9 +18,15 @@ export class ToastHostComponent {
     info: 'border-sky-200 bg-sky-50 text-sky-900',
   };
 
-  protected readonly icons: Record<string, string> = {
-    success: '✓',
-    error: '!',
-    info: 'i',
+  protected readonly iconStyles: Record<string, string> = {
+    success: 'text-emerald-600',
+    error: 'text-red-600',
+    info: 'text-sky-600',
+  };
+
+  protected readonly icons: Record<string, IconName> = {
+    success: 'check-circle',
+    error: 'exclamation-circle',
+    info: 'information-circle',
   };
 }

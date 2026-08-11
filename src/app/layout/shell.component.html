@@ -1,32 +1,59 @@
 <div class="flex min-h-screen bg-slate-50 text-slate-900">
   <!-- Sidebar -->
   <aside
-    class="fixed inset-y-0 left-0 z-30 w-64 -translate-x-full border-r border-slate-200 bg-white transition-transform lg:translate-x-0"
+    class="fixed inset-y-0 left-0 z-30 flex -translate-x-full flex-col border-r border-slate-200 bg-white transition-[transform,width] duration-200 ease-in-out lg:translate-x-0"
+    [class]="collapsed() ? 'w-[76px]' : 'w-64'"
     [class.translate-x-0]="sidebarOpen()"
   >
-    <div class="flex h-16 items-center gap-2 border-b border-slate-200 px-6">
+    <div class="flex h-16 shrink-0 items-center gap-2.5 overflow-hidden border-b border-slate-200 px-5">
       <span
-        class="grid h-8 w-8 place-items-center rounded-lg bg-teal-600 text-sm font-bold text-white"
+        class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-teal-600 text-sm font-bold text-white"
         aria-hidden="true"
       >
         S
       </span>
-      <span class="text-base font-semibold tracking-tight">ShopAdmin</span>
+      @if (!collapsed()) {
+        <span class="truncate text-base font-semibold tracking-tight">ShopAdmin</span>
+      }
     </div>
-    <nav class="flex flex-col gap-1 p-4" aria-label="Main">
+
+    <nav class="flex flex-1 flex-col gap-1 overflow-y-auto p-3" aria-label="Main">
       @for (item of navItems; track item.path) {
         <a
           [routerLink]="item.path"
-          routerLinkActive="bg-teal-50 text-teal-700"
+          routerLinkActive="bg-teal-50 text-teal-700 font-semibold"
           [routerLinkActiveOptions]="{ exact: false }"
           (click)="closeSidebar()"
+          [class.justify-center]="collapsed()"
+          [attr.title]="collapsed() ? item.label : null"
           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
         >
-          <span class="text-base" aria-hidden="true">{{ item.icon }}</span>
-          {{ item.label }}
+          <app-icon [name]="item.icon" class="h-5 w-5" />
+          @if (!collapsed()) {
+            <span class="truncate">{{ item.label }}</span>
+          }
         </a>
       }
     </nav>
+
+    <div class="border-t border-slate-200 p-3">
+      <button
+        type="button"
+        class="hidden w-full items-center justify-center gap-2 rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 lg:flex"
+        (click)="toggleCollapsed()"
+        [attr.aria-pressed]="collapsed()"
+        aria-label="Toggle sidebar width"
+      >
+        <app-icon
+          name="panel-left"
+          class="h-5 w-5 transition-transform"
+          [class.rotate-180]="collapsed()"
+        />
+        @if (!collapsed()) {
+          <span class="text-sm font-medium">Collapse</span>
+        }
+      </button>
+    </div>
   </aside>
 
   <!-- Backdrop for mobile -->
@@ -40,7 +67,10 @@
   }
 
   <!-- Main column -->
-  <div class="flex min-w-0 flex-1 flex-col lg:pl-64">
+  <div
+    class="flex min-w-0 flex-1 flex-col transition-[padding] duration-200 ease-in-out"
+    [class]="collapsed() ? 'lg:pl-[76px]' : 'lg:pl-64'"
+  >
     <header
       class="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-slate-200 bg-white/80 px-4 backdrop-blur sm:px-6"
     >
@@ -51,31 +81,68 @@
         [attr.aria-expanded]="sidebarOpen()"
         aria-label="Toggle navigation menu"
       >
-        <span class="text-lg" aria-hidden="true">☰</span>
+        <app-icon name="menu" class="h-5 w-5" />
       </button>
 
-      <div class="ml-auto flex items-center gap-3">
-        <div class="hidden text-right sm:block">
-          <p class="text-sm font-medium leading-tight">
-            {{ auth.user()?.name }}
-          </p>
-          <p class="text-xs capitalize text-slate-500">
-            {{ auth.user()?.role }}
-          </p>
-        </div>
-        <span
-          class="grid h-9 w-9 place-items-center rounded-full bg-slate-200 text-sm font-semibold text-slate-700"
-          aria-hidden="true"
-        >
-          {{ initials() }}
-        </span>
+      <div class="relative ml-auto" #userMenu>
         <button
           type="button"
-          class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
-          (click)="auth.logout()"
+          class="flex items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-2 transition-colors hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+          (click)="toggleUserMenu()"
+          [attr.aria-expanded]="userMenuOpen()"
+          aria-haspopup="menu"
+          aria-label="Open account menu"
         >
-          Sign out
+          <span
+            class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-200 text-sm font-semibold text-slate-700"
+            aria-hidden="true"
+          >
+            {{ initials() }}
+          </span>
+          <span class="hidden text-left sm:block">
+            <span class="block text-sm font-medium leading-tight">
+              {{ auth.user()?.name }}
+            </span>
+            <span class="block text-xs capitalize leading-tight text-slate-500">
+              {{ auth.user()?.role }}
+            </span>
+          </span>
+          <app-icon name="chevron-down" class="hidden h-4 w-4 text-slate-400 sm:block" />
         </button>
+
+        @if (userMenuOpen()) {
+          <div
+            role="menu"
+            class="absolute right-0 top-full mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white py-1.5 shadow-lg"
+          >
+            <div class="border-b border-slate-100 px-3.5 py-2.5 sm:hidden">
+              <p class="truncate text-sm font-medium text-slate-900">
+                {{ auth.user()?.name }}
+              </p>
+              <p class="text-xs capitalize text-slate-500">
+                {{ auth.user()?.role }}
+              </p>
+            </div>
+            <a
+              routerLink="/settings"
+              role="menuitem"
+              class="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 hover:bg-slate-50"
+              (click)="closeUserMenu()"
+            >
+              <app-icon name="settings" class="h-4 w-4 text-slate-400" />
+              Settings
+            </a>
+            <button
+              type="button"
+              role="menuitem"
+              class="flex w-full items-center gap-2.5 px-3.5 py-2 text-left text-sm text-red-600 hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500"
+              (click)="auth.logout()"
+            >
+              <app-icon name="logout" class="h-4 w-4" />
+              Sign out
+            </button>
+          </div>
+        }
       </div>
     </header>
 

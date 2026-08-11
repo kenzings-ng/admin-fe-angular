@@ -14,11 +14,20 @@ import {
   CustomerStatus,
 } from '../../core/models/customer.model';
 import { CustomerService } from '../../core/services/customer.service';
+import { EmptyStateComponent } from '../../shared/ui/empty-state.component';
+import { IconComponent } from '../../shared/ui/icon.component';
 
 @Component({
   selector: 'app-customer-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CurrencyPipe, DatePipe, DecimalPipe, RouterLink],
+  imports: [
+    CurrencyPipe,
+    DatePipe,
+    DecimalPipe,
+    RouterLink,
+    EmptyStateComponent,
+    IconComponent,
+  ],
   templateUrl: './customer-list.component.html',
 })
 export class CustomerListComponent implements OnInit {

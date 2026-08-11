@@ -19,7 +19,7 @@
       />
     </app-form-field>
 
-    <div class="mb-4 grid grid-cols-2 gap-4">
+    <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
       <app-form-field
         label="Price (USD)"
         for="pf-price"
@@ -119,13 +119,23 @@
     </div>
 
     <app-form-field label="Description" for="pf-desc" class="mb-6">
-      <textarea
-        id="pf-desc"
-        rows="3"
-        appInput
-        class="resize-y"
-        [formField]="pform.description"
-      ></textarea>
+      <app-rich-text-editor id="pf-desc" [formField]="pform.description" />
+    </app-form-field>
+
+    <app-form-field label="Details &amp; care" for="pf-details" class="mb-6">
+      <app-string-list-input
+        id="pf-details"
+        [formField]="pform.details"
+        placeholder="e.g. 100% organic cotton"
+      />
+    </app-form-field>
+
+    <app-form-field label="Sizes" for="pf-sizes" class="mb-6">
+      <app-string-list-input
+        id="pf-sizes"
+        [formField]="pform.sizes"
+        placeholder="e.g. S, M, L, XL"
+      />
     </app-form-field>
 
     <div class="flex justify-end gap-3">

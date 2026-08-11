@@ -5,6 +5,10 @@ export interface Product {
   stock: number;
   image?: string;
   description?: string;
+  /** Bullet points shown under "Details & Care" on the storefront PDP. */
+  details?: string[];
+  /** Available sizes; a non-empty apparel-sized list switches the storefront's Size & Fit tab to the size chart. */
+  sizes?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -16,6 +20,8 @@ export interface CreateProductPayload {
   stock?: number;
   image?: string;
   description?: string;
+  details?: string[];
+  sizes?: string[];
 }
 
 /** Payload for updating a product (PUT /products/:id) — all fields optional. */

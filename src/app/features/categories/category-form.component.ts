@@ -13,6 +13,7 @@ import { ButtonComponent } from '../../shared/ui/button.component';
 import { FormFieldComponent } from '../../shared/ui/form-field.component';
 import { InputDirective } from '../../shared/ui/input.directive';
 import { ModalComponent } from '../../shared/ui/modal.component';
+import { RichTextEditorComponent } from '../../shared/ui/rich-text-editor.component';
 
 interface CategoryFormModel {
   name: string;
@@ -35,6 +36,7 @@ type FieldValidity = {
     FormFieldComponent,
     InputDirective,
     ModalComponent,
+    RichTextEditorComponent,
   ],
   templateUrl: './category-form.component.html',
 })

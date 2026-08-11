@@ -24,6 +24,8 @@ import { ButtonComponent } from '../../shared/ui/button.component';
 import { FormFieldComponent } from '../../shared/ui/form-field.component';
 import { InputDirective } from '../../shared/ui/input.directive';
 import { ModalComponent } from '../../shared/ui/modal.component';
+import { RichTextEditorComponent } from '../../shared/ui/rich-text-editor.component';
+import { StringListInputComponent } from '../../shared/ui/string-list-input.component';
 
 interface ProductFormModel {
   name: string;
@@ -31,6 +33,8 @@ interface ProductFormModel {
   stock: number;
   image: string;
   description: string;
+  details: string[];
+  sizes: string[];
 }
 
 /** Minimal shape of the field state we read in `isInvalid`. */
@@ -49,6 +53,8 @@ type FieldValidity = {
     FormFieldComponent,
     InputDirective,
     ModalComponent,
+    RichTextEditorComponent,
+    StringListInputComponent,
   ],
   templateUrl: './product-form.component.html',
 })
@@ -71,6 +77,8 @@ export class ProductFormComponent {
     stock: 0,
     image: '',
     description: '',
+    details: [],
+    sizes: [],
   });
 
   protected readonly pform = form(this.model, (path) => {
@@ -93,6 +101,8 @@ export class ProductFormComponent {
         stock: p?.stock ?? 0,
         image: p?.image ?? '',
         description: p?.description ?? '',
+        details: p?.details ?? [],
+        sizes: p?.sizes ?? [],
       });
     });
   }
@@ -168,14 +178,22 @@ export class ProductFormComponent {
 
     const image = raw.image.trim();
     const description = raw.description.trim();
+    const details = raw.details.map((d) => d.trim()).filter(Boolean);
+    const sizes = raw.sizes.map((s) => s.trim()).filter(Boolean);
 
-    // On create, only send optional string fields when they have content.
-    // On edit, send an empty string so a cleared image/description persists.
+    // On create, only send optional fields when they have content.
+    // On edit, send the (possibly empty) value so a cleared field persists.
     if (image || this.editing()) {
       payload.image = image;
     }
     if (description || this.editing()) {
       payload.description = description;
+    }
+    if (details.length > 0 || this.editing()) {
+      payload.details = details;
+    }
+    if (sizes.length > 0 || this.editing()) {
+      payload.sizes = sizes;
     }
 
     this.save.emit(payload);

@@ -11,12 +11,24 @@ import {
 import { Category, CategoryPayload } from '../../core/models/category.model';
 import { CategoryService } from '../../core/services/category.service';
 import { ToastService } from '../../core/services/toast.service';
+import { EmptyStateComponent } from '../../shared/ui/empty-state.component';
+import { IconComponent } from '../../shared/ui/icon.component';
+import { ModalComponent } from '../../shared/ui/modal.component';
+import { StripHtmlPipe } from '../../shared/ui/strip-html.pipe';
 import { CategoryFormComponent } from './category-form.component';
 
 @Component({
   selector: 'app-category-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, DecimalPipe, CategoryFormComponent],
+  imports: [
+    DatePipe,
+    DecimalPipe,
+    CategoryFormComponent,
+    EmptyStateComponent,
+    IconComponent,
+    ModalComponent,
+    StripHtmlPipe,
+  ],
   templateUrl: './category-list.component.html',
 })
 export class CategoryListComponent implements OnInit {
