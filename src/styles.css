@@ -2,6 +2,44 @@
 
 @import 'tailwindcss';
 
+/* Keep Tailwind's dark variant opt-in and scope the admin shell palette. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+html.dark body { background-color: #0b1220; color: #e5e7eb; }
+html.dark .bg-slate-50 { background-color: #0f1a2b; }
+html.dark .bg-slate-100 { background-color: #172235; }
+html.dark .bg-white,
+html.dark [class*="bg-white/"] { background-color: #111b2d !important; }
+html.dark .text-slate-950,
+html.dark .text-slate-900 { color: #f8fafc; }
+html.dark .text-slate-800,
+html.dark .text-slate-700 { color: #e2e8f0; }
+html.dark .text-slate-600,
+html.dark .text-slate-500 { color: #94a3b8; }
+html.dark [class*="border-slate-"] { border-color: #293a53 !important; }
+html.dark [class*="divide-slate-"] > :not(:last-child) { border-color: #293a53 !important; }
+html.dark [class*="hover\\:bg-slate-50"]:hover { background-color: #18263b !important; }
+html.dark input,
+html.dark select,
+html.dark textarea { background-color: #0f1a2b !important; color: #e5e7eb !important; border-color: #334155 !important; }
+html.dark input::placeholder,
+html.dark textarea::placeholder { color: #64748b; }
+html.dark .bg-emerald-50 { background-color: #12352f !important; }
+html.dark .bg-red-50 { background-color: #3a1d2a !important; }
+html.dark .bg-amber-50 { background-color: #3b2c16 !important; }
+html.dark .bg-teal-50 { background-color: #12343a !important; }
+html.dark .text-emerald-700 { color: #6ee7b7 !important; }
+html.dark .text-red-700 { color: #fda4af !important; }
+html.dark .text-amber-700 { color: #fcd34d !important; }
+html.dark .text-teal-700 { color: #5eead4 !important; }
+html.dark .text-teal-600 { color: #2dd4bf !important; }
+html.dark .text-slate-400 { color: #94a3b8 !important; }
+html.dark .ck-content-wrapper .ck.ck-toolbar { background-color: #17263d; border-color: #2b3d59; }
+html.dark .ck-content-wrapper .ck-editor__editable { background: #111c31; color: #e2e8f0; }
+html.dark .ck-content-wrapper .ck-button { color: #cbd5e1; }
+html.dark .ck-content-wrapper .ck-button:hover,
+html.dark .ck-content-wrapper .ck-button.ck-on { background: #263b59; color: #fff; }
+
 @keyframes toast-in {
   from {
     opacity: 0;
@@ -70,7 +108,16 @@
   --ck-color-focus-border: transparent;
   --ck-focus-ring: 0 0 0 0 transparent;
   --ck-font-size-base: 13.5px;
+  width: 100%;
+  min-width: 0;
 }
+
+.ck-content-wrapper .ck.ck-editor,
+.ck-content-wrapper .ck-editor__main,
+.ck-content-wrapper .ck-editor__editable,
+.ck-content-wrapper .ck.ck-toolbar { width: 100%; max-width: none; min-width: 0; }
+.ck-content-wrapper .ck.ck-toolbar { flex-wrap: wrap; overflow: visible; }
+.ck-content-wrapper .ck.ck-toolbar .ck-toolbar__items { flex-wrap: wrap; min-width: 0; }
 
 .ck-content-wrapper .ck.ck-toolbar {
   border: none;

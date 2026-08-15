@@ -57,4 +57,11 @@ export class OrderDetailComponent implements OnInit {
   protected badgeClass(status: OrderStatus): string {
     return ORDER_STATUS_BADGE[status];
   }
+
+  protected transactionBadge(status: string): string {
+    if (status === 'success') return 'bg-emerald-50 text-emerald-700';
+    if (status === 'failed') return 'bg-red-50 text-red-700';
+    if (status === 'pending') return 'bg-amber-50 text-amber-700';
+    return 'bg-slate-100 text-slate-600';
+  }
 }

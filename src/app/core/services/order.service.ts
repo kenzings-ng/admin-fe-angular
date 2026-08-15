@@ -1,135 +1,70 @@
-import { Injectable } from '@angular/core';
-import { delay, Observable, of, throwError } from 'rxjs';
-import { Order, OrderItem, OrderSummary } from '../models/order.model';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { Order, OrderItem, OrderSummary, OrderStatus, OrderTransaction } from '../models/order.model';
 
-/**
- * MOCK orders data so the list + detail pages work before the backend exists.
- * Replace `list()`/`get()` bodies with `HttpClient` calls returning the same
- * shapes when the API is ready.
- */
+interface ApiOrder {
+  _id: string;
+  userId?: string | { _id: string; name: string; email: string };
+  items: OrderItem[];
+  subtotal: number;
+  discount: number;
+  totalPrice: number;
+  status: OrderStatus;
+  shippingAddress?: string;
+  createdAt: string;
+  transactions?: OrderTransaction[];
+}
+
+function mapOrder(api: ApiOrder): Order {
+  const customer = typeof api.userId === 'object' ? api.userId.name : 'Unknown customer';
+  const email = typeof api.userId === 'object' ? api.userId.email : '';
+  return {
+    _id: api._id,
+    number: `#ORD-${api._id.slice(-8).toUpperCase()}`,
+    customer,
+    email,
+    createdAt: api.createdAt,
+    status: api.status,
+    shippingAddress: api.shippingAddress ?? '—',
+    items: api.items,
+    subtotal: api.subtotal,
+    discount: api.discount,
+    totalPrice: api.totalPrice,
+    transactions: api.transactions,
+    timeline: [{ label: 'Order placed', at: api.createdAt }],
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class OrderService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.apiUrl}/orders`;
+
   list(): Observable<OrderSummary[]> {
-    const summaries = MOCK_ORDERS.map<OrderSummary>((o) => ({
-      _id: o._id,
-      number: o.number,
-      customer: o.customer,
-      email: o.email,
-      createdAt: o.createdAt,
-      status: o.status,
-      itemCount: o.items.reduce((n, i) => n + i.quantity, 0),
-      total: orderTotal(o.items),
-    }));
-    return of(summaries).pipe(delay(300));
+    return this.http.get<ApiOrder[]>(`${this.baseUrl}/admin/all`).pipe(
+      map((orders) => orders.map((api) => {
+        const order = mapOrder(api);
+        return {
+          _id: order._id,
+          number: order.number,
+          customer: order.customer,
+          email: order.email,
+          createdAt: order.createdAt,
+          status: order.status,
+          itemCount: order.items.reduce((sum, item) => sum + item.quantity, 0),
+          total: order.totalPrice ?? order.items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+        };
+      })),
+    );
   }
 
   get(id: string): Observable<Order> {
-    const order = MOCK_ORDERS.find((o) => o._id === id);
-    return order
-      ? of(order).pipe(delay(250))
-      : throwError(() => new Error('Order not found'));
+    return this.http.get<ApiOrder>(`${this.baseUrl}/${id}`).pipe(map(mapOrder));
   }
 }
 
 export function orderTotal(items: OrderItem[]): number {
-  return items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 }
-
-const MOCK_ORDERS: Order[] = [
-  {
-    _id: '7841',
-    number: '#ORD-7841',
-    customer: 'Amelia Chen',
-    email: 'amelia.chen@example.com',
-    createdAt: '2026-07-03T09:24:00Z',
-    status: 'delivered',
-    shippingAddress: '48 Marlow St, San Francisco, CA 94103',
-    items: [
-      { name: 'Aurora Wireless Headphones', quantity: 1, price: 149 },
-      { name: 'USB-C Charging Cable', quantity: 2, price: 12 },
-    ],
-    timeline: [
-      { label: 'Order placed', at: '2026-07-01T10:00:00Z' },
-      { label: 'Payment confirmed', at: '2026-07-01T10:02:00Z' },
-      { label: 'Shipped', at: '2026-07-02T08:30:00Z' },
-      { label: 'Delivered', at: '2026-07-03T09:24:00Z' },
-    ],
-  },
-  {
-    _id: '7840',
-    number: '#ORD-7840',
-    customer: 'Liam Nguyen',
-    email: 'liam.nguyen@example.com',
-    createdAt: '2026-07-03T07:10:00Z',
-    status: 'shipped',
-    shippingAddress: '12 Rue de Rivoli, 75004 Paris, France',
-    items: [{ name: 'Nimbus Smart Watch', quantity: 1, price: 89.5 }],
-    timeline: [
-      { label: 'Order placed', at: '2026-07-02T14:00:00Z' },
-      { label: 'Payment confirmed', at: '2026-07-02T14:01:00Z' },
-      { label: 'Shipped', at: '2026-07-03T07:10:00Z' },
-    ],
-  },
-  {
-    _id: '7839',
-    number: '#ORD-7839',
-    customer: 'Sofia Rossi',
-    email: 'sofia.rossi@example.com',
-    createdAt: '2026-07-02T18:45:00Z',
-    status: 'processing',
-    shippingAddress: 'Via Roma 22, 20121 Milano, Italy',
-    items: [
-      { name: 'Terra Running Shoes', quantity: 2, price: 120 },
-      { name: 'Verde Yoga Mat', quantity: 1, price: 45 },
-      { name: 'Sports Water Bottle', quantity: 3, price: 15.4 },
-    ],
-    timeline: [
-      { label: 'Order placed', at: '2026-07-02T18:45:00Z' },
-      { label: 'Payment confirmed', at: '2026-07-02T18:47:00Z' },
-    ],
-  },
-  {
-    _id: '7838',
-    number: '#ORD-7838',
-    customer: 'Noah Williams',
-    email: 'noah.williams@example.com',
-    createdAt: '2026-07-02T11:05:00Z',
-    status: 'cancelled',
-    shippingAddress: '9 King St, Manchester M2 6AG, UK',
-    items: [{ name: 'Lumen Desk Lamp', quantity: 1, price: 34.99 }],
-    timeline: [
-      { label: 'Order placed', at: '2026-07-02T11:05:00Z' },
-      { label: 'Cancelled by customer', at: '2026-07-02T12:20:00Z' },
-    ],
-  },
-  {
-    _id: '7837',
-    number: '#ORD-7837',
-    customer: 'Yuki Tanaka',
-    email: 'yuki.tanaka@example.com',
-    createdAt: '2026-07-01T15:30:00Z',
-    status: 'delivered',
-    shippingAddress: '3-1 Chiyoda, Tokyo 100-0001, Japan',
-    items: [
-      { name: 'Aurora Wireless Headphones', quantity: 1, price: 149 },
-      { name: 'Travel Case', quantity: 1, price: 29.4 },
-    ],
-    timeline: [
-      { label: 'Order placed', at: '2026-06-29T09:00:00Z' },
-      { label: 'Payment confirmed', at: '2026-06-29T09:03:00Z' },
-      { label: 'Shipped', at: '2026-06-30T10:00:00Z' },
-      { label: 'Delivered', at: '2026-07-01T15:30:00Z' },
-    ],
-  },
-  {
-    _id: '7836',
-    number: '#ORD-7836',
-    customer: 'Emma Johansson',
-    email: 'emma.j@example.com',
-    createdAt: '2026-07-01T08:12:00Z',
-    status: 'pending',
-    shippingAddress: 'Storgatan 5, 111 51 Stockholm, Sweden',
-    items: [{ name: 'Nimbus Smart Watch', quantity: 2, price: 89.5 }],
-    timeline: [{ label: 'Order placed', at: '2026-07-01T08:12:00Z' }],
-  },
-];

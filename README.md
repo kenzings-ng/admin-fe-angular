@@ -11,7 +11,16 @@ Admin panel for the e-commerce store, built with Angular 22 (standalone componen
 
 ## Configuration
 
-The API base URL lives in `src/environments/environment.ts` (defaults to `http://localhost:3000`). Make sure the backend is running there before signing in.
+The API base URL is read at runtime from `env.js`, before Angular starts. It is
+not embedded in the bundle. After deploying an existing build, set `API_URL` in
+`.env` (or as a process environment variable) and regenerate only this file:
+
+```bash
+npm run config:runtime -- --output dist/admin-fe/browser/env.js
+```
+
+For example, `API_URL=https://api.example.com` makes requests directly to that
+backend. Ensure the backend permits the frontend origin through CORS.
 
 ## Project structure
 

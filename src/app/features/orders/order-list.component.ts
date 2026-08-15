@@ -20,9 +20,11 @@ import { IconComponent } from '../../shared/ui/icon.component';
 const STATUS_FILTERS: (OrderStatus | 'all')[] = [
   'all',
   'pending',
+  'paid',
   'processing',
   'shipped',
   'delivered',
+  'completed',
   'cancelled',
 ];
 

@@ -9,6 +9,7 @@ import {
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 import { IconComponent, IconName } from '../shared/ui/icon.component';
+import { ThemeService } from '../core/services/theme.service';
 
 interface NavItem {
   label: string;
@@ -28,6 +29,7 @@ interface NavItem {
 })
 export class ShellComponent {
   protected readonly auth = inject(AuthService);
+  private readonly theme = inject(ThemeService);
   protected readonly sidebarOpen = signal(false);
   protected readonly collapsed = signal(false);
   protected readonly userMenuOpen = signal(false);
@@ -38,6 +40,7 @@ export class ShellComponent {
     { label: 'Dashboard', path: '/dashboard', icon: 'grid' },
     { label: 'Orders', path: '/orders', icon: 'receipt' },
     { label: 'Transactions', path: '/transactions', icon: 'credit-card' },
+    { label: 'Payments', path: '/payment-credentials', icon: 'credit-card' },
     { label: 'Products', path: '/products', icon: 'box' },
     { label: 'Categories', path: '/categories', icon: 'tag' },
     { label: 'Customers', path: '/customers', icon: 'users' },

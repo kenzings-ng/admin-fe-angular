@@ -70,6 +70,9 @@ export class TransactionListComponent implements OnInit {
   }
 
   protected methodLabel(t: Transaction): string {
-    return PAYMENT_METHOD_LABEL[t.method];
+    const method = PAYMENT_METHOD_LABEL[t.method];
+    const provider = t.provider ? ` via ${t.provider}` : '';
+    const card = t.cardLastFour ? ` · •••• ${t.cardLastFour}` : '';
+    return `${method}${provider}${card}`;
   }
 }
