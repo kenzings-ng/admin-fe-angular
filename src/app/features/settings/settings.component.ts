@@ -14,6 +14,7 @@ import { ToastService } from '../../core/services/toast.service';
 import { ButtonComponent } from '../../shared/ui/button.component';
 import { FormFieldComponent } from '../../shared/ui/form-field.component';
 import { InputDirective } from '../../shared/ui/input.directive';
+import { ThemeMode, ThemeService } from '../../core/services/theme.service';
 
 type Tab = 'store' | 'profile' | 'security';
 
@@ -32,6 +33,12 @@ type FieldValidity = {
 export class SettingsComponent {
   private readonly settings = inject(SettingsService);
   private readonly toast = inject(ToastService);
+  protected readonly theme = inject(ThemeService);
+  protected readonly themeModes: { value: ThemeMode; label: string }[] = [
+    { value: 'system', label: 'System' },
+    { value: 'light', label: 'Light' },
+    { value: 'dark', label: 'Dark' },
+  ];
 
   protected readonly tabs: { key: Tab; label: string }[] = [
     { key: 'store', label: 'Store' },
@@ -79,6 +86,11 @@ export class SettingsComponent {
 
   protected isInvalid(state: FieldValidity): boolean {
     return state.invalid() && (state.touched() || state.dirty());
+  }
+
+  protected setThemeMode(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value as ThemeMode;
+    this.theme.setMode(value);
   }
 
   protected saveStore(): void {

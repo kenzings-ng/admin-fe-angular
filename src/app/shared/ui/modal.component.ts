@@ -64,9 +64,10 @@ export class ModalComponent implements AfterViewInit {
       case 'sm':
         return 'max-w-sm';
       case 'md':
-        return 'max-w-md';
+        return 'max-w-xl';
       default:
-        return 'max-w-lg';
+        // Keep rich editors and their toolbars usable without clipping.
+        return 'max-w-3xl';
     }
   }
 

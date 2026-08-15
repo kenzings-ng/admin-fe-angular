@@ -99,6 +99,14 @@ export const routes: Routes = [
         title: 'Transactions · Admin',
       },
       {
+        path: 'payment-credentials',
+        loadComponent: () =>
+          import('./features/payment-credentials/payment-credentials.component').then(
+            (m) => m.PaymentCredentialsComponent,
+          ),
+        title: 'Payment credentials · Admin',
+      },
+      {
         path: 'messages',
         loadComponent: () =>
           import('./features/messages/message-list.component').then(
