@@ -43,7 +43,6 @@ __screenshots__/
 # by scripts/set-env.mjs (keep .env.example committed as the template).
 .env
 .env.local
-/src/environments/environment.ts
 
 # System files
 .DS_Store
