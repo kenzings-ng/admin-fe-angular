@@ -5,7 +5,7 @@
   <div
     #panel
     tabindex="-1"
-    class="modal-enter flex max-h-[90vh] w-full flex-col rounded-t-2xl bg-white shadow-xl outline-none sm:max-h-[85vh] sm:rounded-2xl"
+    class="modal-enter flex max-h-[90vh] w-full flex-col border border-slate-300 bg-white shadow-xl outline-none sm:max-h-[85vh] sm:rounded-sm"
     [class]="sizeClass()"
     [attr.role]="role()"
     aria-modal="true"
@@ -13,7 +13,7 @@
     [attr.aria-label]="title() ? null : ariaLabel()"
   >
     <div class="flex justify-center pt-2 sm:hidden" aria-hidden="true">
-      <span class="h-1.5 w-10 rounded-full bg-slate-300"></span>
+      <span class="h-1.5 w-10 bg-slate-300"></span>
     </div>
     @if (title(); as heading) {
       <div
@@ -25,7 +25,7 @@
         @if (dismissible()) {
           <button
             type="button"
-            class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+            class="flex h-11 w-11 items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-900"
             (click)="dismiss.emit()"
             aria-label="Close dialog"
           >

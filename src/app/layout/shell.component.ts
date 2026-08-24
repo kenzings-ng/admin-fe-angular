@@ -10,6 +10,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 import { IconComponent, IconName } from '../shared/ui/icon.component';
 import { ThemeService } from '../core/services/theme.service';
+import { BrandMarkComponent } from '../shared/ui/brand-mark.component';
 
 interface NavItem {
   label: string;
@@ -20,7 +21,7 @@ interface NavItem {
 @Component({
   selector: 'app-shell',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, IconComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, IconComponent, BrandMarkComponent],
   templateUrl: './shell.component.html',
   host: {
     '(document:click)': 'onDocumentClick($event)',

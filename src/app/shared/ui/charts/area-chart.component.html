@@ -7,27 +7,20 @@
     (pointermove)="onMove($event)"
     (pointerleave)="onLeave()"
   >
-    <defs>
-      <linearGradient id="area-fill" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#0d9488" stop-opacity="0.22" />
-        <stop offset="100%" stop-color="#0d9488" stop-opacity="0" />
-      </linearGradient>
-    </defs>
-
     @for (t of ticks(); track t.label) {
       <line
         [attr.x1]="plotLeft"
         [attr.x2]="plotRight"
         [attr.y1]="t.y"
         [attr.y2]="t.y"
-        stroke="#eef2f6"
+        stroke="#e9e5dc"
         stroke-width="1"
       />
       <text
         [attr.x]="plotLeft - 8"
         [attr.y]="t.y + 3"
         text-anchor="end"
-        fill="#94a3b8"
+        fill="#606671"
         font-size="11"
         style="font-variant-numeric: tabular-nums"
       >
@@ -35,11 +28,11 @@
       </text>
     }
 
-    <path [attr.d]="areaPath()" fill="url(#area-fill)" />
+    <path [attr.d]="areaPath()" fill="#1746d1" fill-opacity="0.08" />
     <path
       [attr.d]="linePath()"
       fill="none"
-      stroke="#0d9488"
+      stroke="#1746d1"
       stroke-width="2.5"
       stroke-linejoin="round"
       stroke-linecap="round"
@@ -50,7 +43,7 @@
         [attr.x]="p.x"
         [attr.y]="h - 8"
         text-anchor="middle"
-        fill="#94a3b8"
+        fill="#606671"
         font-size="11"
       >
         {{ p.label }}
@@ -63,7 +56,7 @@
         [attr.x2]="hp.x"
         [attr.y1]="plotTop"
         [attr.y2]="baseline"
-        stroke="#94a3b8"
+        stroke="#606671"
         stroke-width="1"
         stroke-dasharray="3 3"
       />
@@ -72,7 +65,7 @@
         [attr.cy]="hp.y"
         r="4.5"
         fill="#ffffff"
-        stroke="#0d9488"
+        stroke="#1746d1"
         stroke-width="2.5"
       />
     }

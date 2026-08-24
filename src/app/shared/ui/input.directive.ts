@@ -9,7 +9,7 @@ import { Directive } from '@angular/core';
   selector: 'input[appInput], textarea[appInput]',
   host: {
     class:
-      'w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500',
+      'min-h-11 w-full rounded-sm border border-slate-400 bg-white px-3 py-2 text-sm text-slate-900 transition-[border-color,box-shadow] focus:border-teal-600 focus:outline-none focus:shadow-[inset_0_-2px_0_#1746d1]',
   },
 })
 export class InputDirective {}

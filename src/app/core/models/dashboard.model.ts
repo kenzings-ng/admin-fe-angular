@@ -5,6 +5,7 @@ export interface TrendPoint {
 }
 
 export type MetricFormat = 'currency' | 'number' | 'compact';
+export type DashboardRange = '7d' | '30d' | '90d' | '12m';
 
 /** A headline metric shown as a stat card. */
 export interface Kpi {
@@ -24,11 +25,7 @@ export interface CategorySale {
   value: number;
 }
 
-export type OrderStatus =
-  | 'delivered'
-  | 'shipped'
-  | 'processing'
-  | 'cancelled';
+export type OrderStatus = 'delivered' | 'shipped' | 'processing' | 'cancelled';
 
 /** Count of orders in a given fulfillment status. */
 export interface OrderStatusCount {

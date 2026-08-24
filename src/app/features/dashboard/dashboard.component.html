@@ -1,193 +1,81 @@
-<div class="mx-auto max-w-[1440px]">
-  <header class="mb-8 flex flex-wrap items-end justify-between gap-5">
+<div class="mx-auto max-w-[1480px]">
+  <header class="mb-8 grid gap-6 border-b border-slate-900 pb-6 lg:grid-cols-[1fr_auto] lg:items-end">
     <div>
-      <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-teal-600">Overview</p>
-      <h1 class="text-3xl font-semibold tracking-[-0.03em] text-slate-950">Good morning, admin.</h1>
-      <p class="mt-2 text-sm text-slate-500">Here’s what’s happening with your store today.</p>
+      <p class="font-mono text-[10px] uppercase tracking-[0.16em] text-teal-700">Operating room / live overview</p>
+      <h1 class="mt-3 text-4xl font-semibold tracking-[-0.035em] text-slate-950">Store operations</h1>
+      <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Revenue, fulfillment and product movement in one working view.</p>
     </div>
-
-    <div
-      class="inline-flex rounded-xl border border-slate-200/80 bg-white p-1 shadow-sm shadow-slate-200/50"
-      role="group"
-      aria-label="Date range"
-    >
+    <div class="inline-flex border border-slate-300 bg-white p-1" role="group" aria-label="Date range">
       @for (r of ranges; track r.key) {
-        <button
-          type="button"
-          class="rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
-          [class]="
-            range() === r.key
-              ? 'bg-slate-950 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100'
-          "
-          [attr.aria-pressed]="range() === r.key"
-          (click)="range.set(r.key)"
-        >
-          {{ r.label }}
-        </button>
+        <button type="button" class="min-h-10 min-w-11 px-3 font-mono text-[10px] font-medium uppercase tracking-[0.1em]" [class]="range() === r.key ? 'bg-slate-950 text-white' : 'text-slate-600 hover:bg-slate-100'" [attr.aria-pressed]="range() === r.key" (click)="selectRange(r.key)">{{ r.label }}</button>
       }
     </div>
   </header>
 
   @if (loading()) {
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      @for (n of [1, 2, 3, 4]; track n) {
-        <div class="h-32 animate-pulse rounded-2xl bg-slate-200/70"></div>
-      }
+    <div class="grid gap-px border border-slate-300 bg-slate-300 sm:grid-cols-2 xl:grid-cols-4">
+      @for (n of [1, 2, 3, 4]; track n) { <div class="admin-skeleton h-32 animate-pulse"></div> }
     </div>
-    <div class="mt-4 grid gap-4 lg:grid-cols-3">
-      <div class="h-80 animate-pulse rounded-2xl bg-slate-200/70 lg:col-span-2"></div>
-      <div class="h-80 animate-pulse rounded-2xl bg-slate-200/70"></div>
-    </div>
+    <div class="mt-6 grid gap-6 lg:grid-cols-3"><div class="admin-skeleton h-96 animate-pulse lg:col-span-2"></div><div class="admin-skeleton h-96 animate-pulse"></div></div>
   } @else if (error()) {
-    <div
-      class="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-800"
-      role="alert"
-    >
-      {{ error() }}
-    </div>
+    <div class="border border-red-600 bg-red-50 p-6 text-sm text-red-800" role="alert">{{ error() }}</div>
   } @else if (data(); as d) {
-    <!-- KPI row -->
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      @for (kpi of d.kpis; track kpi.key) {
-        <app-stat-card [kpi]="kpi" />
-      }
-    </div>
+    <section aria-label="Key performance indicators" class="grid gap-px border border-slate-300 bg-slate-300 sm:grid-cols-2 xl:grid-cols-4">
+      @for (kpi of d.kpis; track kpi.key) { <app-stat-card [kpi]="kpi" /> }
+    </section>
 
-    <!-- Revenue + order status -->
-    <div class="mt-6 grid gap-5 lg:grid-cols-3">
-      <section
-        class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[0_12px_36px_-24px_rgba(15,23,42,0.35)] lg:col-span-2"
-      >
-        <div class="mb-4 flex items-baseline justify-between gap-3">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Performance</p>
-            <h2 class="mt-1 text-lg font-semibold tracking-tight text-slate-950">Revenue overview</h2>
-            <p class="mt-1 text-sm text-slate-500">Monthly, last 12 months</p>
-          </div>
+    <div class="mt-6 grid border border-slate-300 bg-white lg:grid-cols-[minmax(0,2fr)_minmax(20rem,1fr)]">
+      <section class="border-b border-slate-300 p-5 sm:p-7 lg:border-b-0 lg:border-r">
+        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div><p class="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-500">Revenue / 12-month line</p><h2 class="mt-2 text-xl font-semibold text-slate-950">Commercial movement</h2></div>
+          <p class="font-mono text-[9px] uppercase tracking-[0.12em] text-slate-400">Range / {{ range() }}</p>
         </div>
         <app-area-chart [data]="d.revenue" label="Monthly revenue, last 12 months" />
       </section>
-
-      <section class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[0_12px_36px_-24px_rgba(15,23,42,0.35)]">
-        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Fulfillment</p>
-        <h2 class="mt-1 text-lg font-semibold tracking-tight text-slate-950">Order status</h2>
+      <section class="p-5 sm:p-7">
+        <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-500">Fulfillment / current mix</p>
+        <h2 class="mt-2 text-xl font-semibold text-slate-950">Order status</h2>
         <app-donut-chart [segments]="donutSegments()" unit="orders" />
       </section>
     </div>
 
-    <!-- Category sales + top products -->
-    <div class="mt-5 grid gap-5 lg:grid-cols-3">
-      <section
-        class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[0_12px_36px_-24px_rgba(15,23,42,0.35)] lg:col-span-2"
-      >
-        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Merchandising</p>
-        <h2 class="mt-1 mb-4 text-lg font-semibold tracking-tight text-slate-950">Sales by category</h2>
+    <div class="mt-6 grid border border-slate-300 bg-white lg:grid-cols-[1.4fr_1fr]">
+      <section class="border-b border-slate-300 p-5 sm:p-7 lg:border-b-0 lg:border-r">
+        <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-500">Merchandising / category mix</p>
+        <h2 class="mb-6 mt-2 text-xl font-semibold text-slate-950">Sales by category</h2>
         <app-bar-chart [items]="d.categories" />
       </section>
-
-      <section class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[0_12px_36px_-24px_rgba(15,23,42,0.35)]">
-        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Product performance</p>
-        <h2 class="mt-1 mb-4 text-lg font-semibold tracking-tight text-slate-950">Top products</h2>
-        <ol class="space-y-3">
+      <section class="p-5 sm:p-7">
+        <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-500">Product performance / ranked</p>
+        <h2 class="mb-5 mt-2 text-xl font-semibold text-slate-950">Top products</h2>
+        <ol class="divide-y divide-slate-200 border-t border-slate-900">
           @for (p of d.topProducts; track p.name; let i = $index) {
-            <li class="flex items-center gap-3">
-              <span
-                class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-semibold text-slate-500 tabular-nums"
-              >
-                {{ i + 1 }}
-              </span>
-              <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium text-slate-900">
-                  {{ p.name }}
-                </p>
-                <p class="text-xs text-slate-400 tabular-nums">
-                  {{ p.sold | number }} sold
-                </p>
-              </div>
-              <span class="text-sm font-semibold text-slate-900 tabular-nums">
-                {{ p.revenue | currency: 'USD' : 'symbol' : '1.0-0' }}
-              </span>
+            <li class="grid grid-cols-[2rem_1fr_auto] items-center gap-3 py-3">
+              <span class="font-mono text-[10px] text-slate-400 tabular-nums">{{ (i + 1).toString().padStart(2, '0') }}</span>
+              <div class="min-w-0"><p class="truncate text-sm font-semibold text-slate-900">{{ p.name }}</p><p class="mt-0.5 text-xs text-slate-500 tabular-nums">{{ p.sold | number }} sold</p></div>
+              <span class="text-sm font-semibold text-slate-900 tabular-nums">{{ p.revenue | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
             </li>
           }
         </ol>
       </section>
     </div>
 
-    <!-- Recent orders -->
-    <section class="mt-5 rounded-2xl border border-slate-200/80 bg-white shadow-[0_12px_36px_-24px_rgba(15,23,42,0.35)]">
-      <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
-        <div><p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Live feed</p><h2 class="mt-1 text-lg font-semibold tracking-tight text-slate-950">Recent orders</h2></div>
-        <a
-          routerLink="/orders"
-          class="rounded-lg px-3 py-2 text-xs font-semibold text-teal-700 transition-colors hover:bg-teal-50"
-        >
-          View all orders <span aria-hidden="true">→</span>
-        </a>
+    <section class="mt-6 border border-slate-300 bg-white">
+      <div class="flex items-center justify-between border-b border-slate-300 px-5 py-4 sm:px-7">
+        <div><p class="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-500">Work queue / latest</p><h2 class="mt-1 text-xl font-semibold text-slate-950">Recent orders</h2></div>
+        <a routerLink="/orders" class="flex min-h-11 items-center px-3 text-xs font-semibold text-teal-700 hover:bg-teal-50">Open order queue <span class="ml-2" aria-hidden="true">→</span></a>
       </div>
-      <!-- Mobile card list -->
-      <div class="divide-y divide-slate-100 sm:hidden">
+      <div class="divide-y divide-slate-200 sm:hidden">
         @for (o of d.recentOrders; track o.id) {
-          <div class="px-5 py-3">
-            <div class="flex items-center justify-between gap-3">
-              <span class="font-medium text-slate-900 tabular-nums">{{ o.id }}</span>
-              <span
-                class="rounded-full px-2.5 py-0.5 text-xs font-medium capitalize"
-                [class]="badgeClass(o.status)"
-              >
-                {{ o.status }}
-              </span>
-            </div>
-            <div class="mt-1 flex items-center justify-between gap-3 text-sm">
-              <span class="truncate text-slate-500">
-                {{ o.customer }} · {{ o.date | date: 'mediumDate' }}
-              </span>
-              <span class="shrink-0 font-semibold text-slate-900 tabular-nums">
-                {{ o.total | currency: 'USD' }}
-              </span>
-            </div>
-          </div>
+          <div class="px-5 py-4"><div class="flex items-center justify-between gap-3"><span class="font-medium tabular-nums">{{ o.id }}</span><span class="px-2 py-1 text-xs font-medium capitalize" [class]="badgeClass(o.status)">{{ o.status }}</span></div><div class="mt-2 flex items-center justify-between gap-3 text-sm"><span class="truncate text-slate-500">{{ o.customer }} · {{ o.date | date: 'mediumDate' }}</span><span class="shrink-0 font-semibold tabular-nums">{{ o.total | currency: 'USD' }}</span></div></div>
         }
       </div>
-
-      <!-- Table (sm and up) -->
       <div class="hidden overflow-x-auto sm:block">
-        <table class="w-full min-w-[560px] text-left text-sm">
-          <thead
-            class="border-y border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"
-          >
-            <tr>
-              <th scope="col" class="px-6 py-3 font-medium">Order</th>
-              <th scope="col" class="px-6 py-3 font-medium">Customer</th>
-              <th scope="col" class="px-6 py-3 font-medium">Date</th>
-              <th scope="col" class="px-6 py-3 font-medium">Status</th>
-              <th scope="col" class="px-6 py-3 text-right font-medium">Total</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
+        <table class="w-full min-w-[640px] text-left text-sm">
+          <thead class="border-b border-slate-300 bg-slate-100 font-mono text-[9px] uppercase tracking-[0.12em] text-slate-500"><tr><th scope="col" class="px-6 py-3 font-medium">Order</th><th scope="col" class="px-6 py-3 font-medium">Customer</th><th scope="col" class="px-6 py-3 font-medium">Date</th><th scope="col" class="px-6 py-3 font-medium">Status</th><th scope="col" class="px-6 py-3 text-right font-medium">Total</th></tr></thead>
+          <tbody class="divide-y divide-slate-200">
             @for (o of d.recentOrders; track o.id) {
-              <tr class="transition-colors hover:bg-slate-50/80">
-                <td class="whitespace-nowrap px-6 py-4 font-medium text-slate-900 tabular-nums">
-                  {{ o.id }}
-                </td>
-                <td class="whitespace-nowrap px-6 py-4 text-slate-700">
-                  {{ o.customer }}
-                </td>
-                <td class="whitespace-nowrap px-6 py-4 text-slate-500">
-                  {{ o.date | date: 'mediumDate' }}
-                </td>
-                <td class="px-6 py-4">
-                  <span
-                    class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium capitalize"
-                    [class]="badgeClass(o.status)"
-                  >
-                    {{ o.status }}
-                  </span>
-                </td>
-                <td class="whitespace-nowrap px-6 py-4 text-right font-semibold text-slate-900 tabular-nums">
-                  {{ o.total | currency: 'USD' }}
-                </td>
-              </tr>
+              <tr class="hover:bg-slate-50"><td class="whitespace-nowrap px-6 py-4 font-medium tabular-nums">{{ o.id }}</td><td class="whitespace-nowrap px-6 py-4 text-slate-700">{{ o.customer }}</td><td class="whitespace-nowrap px-6 py-4 text-slate-500">{{ o.date | date: 'mediumDate' }}</td><td class="px-6 py-4"><span class="inline-flex px-2.5 py-1 text-xs font-medium capitalize" [class]="badgeClass(o.status)">{{ o.status }}</span></td><td class="whitespace-nowrap px-6 py-4 text-right font-semibold tabular-nums">{{ o.total | currency: 'USD' }}</td></tr>
             }
           </tbody>
         </table>

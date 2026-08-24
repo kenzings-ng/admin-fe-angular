@@ -6,7 +6,7 @@
   @for (toast of toasts(); track toast.id) {
     <div
       role="status"
-      class="toast-enter pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-lg border px-4 py-3 shadow-lg"
+      class="toast-enter pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-sm border px-4 py-3 shadow-lg"
       [class]="styles[toast.kind]"
     >
       <app-icon
@@ -17,7 +17,7 @@
       <p class="flex-1 text-sm leading-snug">{{ toast.message }}</p>
       <button
         type="button"
-        class="rounded p-0.5 opacity-70 hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-current"
+        class="flex h-11 w-11 items-center justify-center opacity-70 hover:opacity-100"
         (click)="toastService.dismiss(toast.id)"
         aria-label="Dismiss notification"
       >

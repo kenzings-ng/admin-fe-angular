@@ -8,24 +8,18 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  DashboardOverview,
-  OrderStatus,
-} from '../../core/models/dashboard.model';
+import { DashboardRange, DashboardOverview, OrderStatus } from '../../core/models/dashboard.model';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AreaChartComponent } from '../../shared/ui/charts/area-chart.component';
 import { BarChartComponent } from '../../shared/ui/charts/bar-chart.component';
-import {
-  DonutChartComponent,
-  DonutSegment,
-} from '../../shared/ui/charts/donut-chart.component';
+import { DonutChartComponent, DonutSegment } from '../../shared/ui/charts/donut-chart.component';
 import { StatCardComponent } from '../../shared/ui/charts/stat-card.component';
 
 const STATUS_COLOR: Record<OrderStatus, string> = {
-  delivered: '#0d9488',
-  shipped: '#2a78d6',
-  processing: '#eda100',
-  cancelled: '#e34948',
+  delivered: '#26714a',
+  shipped: '#1746d1',
+  processing: '#9a6400',
+  cancelled: '#b63a2f',
 };
 
 const STATUS_BADGE: Record<OrderStatus, string> = {
@@ -36,7 +30,7 @@ const STATUS_BADGE: Record<OrderStatus, string> = {
 };
 
 interface RangeOption {
-  key: string;
+  key: DashboardRange;
   label: string;
 }
 
@@ -68,7 +62,7 @@ export class DashboardComponent implements OnInit {
     { key: '90d', label: '90D' },
     { key: '12m', label: '12M' },
   ];
-  protected readonly range = signal('12m');
+  protected readonly range = signal<DashboardRange>('12m');
 
   protected readonly donutSegments = computed<DonutSegment[]>(() =>
     (this.data()?.orderStatus ?? []).map((o) => ({
@@ -79,7 +73,18 @@ export class DashboardComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.dashboard.getOverview().subscribe({
+    this.loadOverview(this.range());
+  }
+
+  protected selectRange(range: DashboardRange): void {
+    this.range.set(range);
+    this.loadOverview(range);
+  }
+
+  private loadOverview(range: DashboardRange): void {
+    this.loading.set(true);
+    this.error.set(null);
+    this.dashboard.getOverview(range).subscribe({
       next: (overview) => {
         this.data.set(overview);
         this.loading.set(false);

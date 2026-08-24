@@ -35,22 +35,22 @@ export class ButtonComponent {
   readonly disabled = input(false);
 
   private readonly base =
-    'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-60';
+    'inline-flex min-h-11 items-center justify-center rounded-sm border font-semibold transition-[color,background-color,border-color,transform] duration-150 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.97]';
 
   private readonly sizes: Record<ButtonSize, string> = {
-    sm: 'px-3 py-1.5 text-sm',
+    sm: 'px-3 py-2 text-xs',
     md: 'px-4 py-2 text-sm',
   };
 
   private readonly variants: Record<ButtonVariant, string> = {
     primary:
-      'bg-teal-600 font-semibold text-white shadow-sm hover:bg-teal-700 focus-visible:ring-teal-500 focus-visible:ring-offset-2',
+      'border-teal-600 bg-teal-600 text-white hover:border-slate-950 hover:bg-slate-950',
     secondary:
-      'border border-slate-300 text-slate-700 hover:bg-slate-100 focus-visible:ring-teal-500',
+      'border-slate-400 bg-transparent text-slate-800 hover:border-teal-600 hover:text-teal-700',
     danger:
-      'bg-red-600 font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:ring-red-500 focus-visible:ring-offset-2',
+      'border-red-600 bg-red-600 text-white hover:border-slate-950 hover:bg-slate-950',
     'danger-ghost':
-      'text-red-600 hover:bg-red-50 focus-visible:ring-red-500',
+      'border-transparent text-red-700 hover:border-red-600 hover:bg-red-50',
   };
 
   protected readonly classes = computed(

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { IconComponent } from './icon.component';
+import { BrandMarkComponent } from './brand-mark.component';
 
 /**
  * Split-screen layout shared by the sign-in, forgot-password and
@@ -9,7 +9,7 @@ import { IconComponent } from './icon.component';
 @Component({
   selector: 'app-auth-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconComponent],
+  imports: [BrandMarkComponent],
   templateUrl: './auth-layout.component.html',
 })
 export class AuthLayoutComponent {

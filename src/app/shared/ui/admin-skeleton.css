@@ -1,0 +1,11 @@
+:root {
+  --admin-skeleton-fill: #d5d1c8;
+}
+
+html.dark {
+  --admin-skeleton-fill: #1c2533;
+}
+
+.admin-skeleton {
+  background-color: var(--admin-skeleton-fill);
+}

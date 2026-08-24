@@ -30,7 +30,7 @@
       @for (s of statuses; track s) {
         <button
           type="button"
-          class="rounded-full px-3 py-1 text-xs font-medium capitalize transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+          class="min-h-11 rounded-full px-3 text-xs font-medium capitalize transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
           [class]="
             statusFilter() === s
               ? 'bg-teal-600 text-white'
@@ -48,7 +48,7 @@
   @if (loading()) {
     <div class="space-y-2">
       @for (n of [1, 2, 3, 4, 5]; track n) {
-        <div class="h-14 animate-pulse rounded-lg bg-slate-200/70"></div>
+        <div class="admin-skeleton h-14 animate-pulse rounded-lg"></div>
       }
     </div>
   } @else if (error()) {
