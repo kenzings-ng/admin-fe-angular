@@ -1,89 +1,188 @@
-# ShopAdmin
+# MAISON Admin
 
-Admin panel for the e-commerce store, built with Angular 22 (standalone components, signals, Tailwind CSS v4). It talks to the NestJS + JWT API documented in the API reference.
+Trang quản trị của hệ thống thương mại điện tử MAISON, xây dựng bằng Angular 22.
+Ứng dụng dùng để quản lý dashboard, sản phẩm, danh mục, đơn hàng, giao dịch,
+khách hàng, cấu hình thanh toán và tin nhắn liên hệ.
 
-## Features
+## Vai trò trong hệ thống
 
-- **JWT auth** — email/password sign-in; the token is stored in `localStorage` and attached to every request by an HTTP interceptor. A 401 clears the session and returns to the login page.
-- **Admin-only access** — a route guard requires an authenticated account with `role: "admin"`. Non-admins are signed out with a message.
-- **Dashboard** — catalog KPIs (product count, units in stock, inventory value) plus a low-stock table.
-- **Products** — searchable table with create, edit, and delete (with confirmation), backed by `/products`.
+| Thành phần | URL local | Repository |
+| --- | --- | --- |
+| Backend API | `http://localhost:3000` | [be-nestjs](https://github.com/kenzings-ng/be-nestjs) |
+| Guest frontend | `http://localhost:4200` | [guest-fe-angular](https://github.com/kenzings-ng/guest-fe-angular) |
+| Admin frontend | `http://localhost:4201` | Repository này |
 
-## Configuration
+> Angular mặc định dùng cổng `4200`. README này chạy admin ở `4201` để có thể
+> mở đồng thời với guest frontend.
 
-The API base URL is read at runtime from `env.js`, before Angular starts. It is
-not embedded in the bundle. After deploying an existing build, set `API_URL` in
-`.env` (or as a process environment variable) and regenerate only this file:
+## Yêu cầu môi trường
+
+- Node.js `^22.22.3`, `^24.15.0` hoặc `>=26.0.0`.
+- npm; lockfile hiện được tạo bằng npm `11.12.1`.
+- Backend API đã chạy tại `http://localhost:3000`.
+
+Kiểm tra phiên bản:
 
 ```bash
-npm run config:runtime -- --output dist/admin-fe/browser/env.js
+node -v
+npm -v
 ```
 
-For example, `API_URL=https://api.example.com` makes requests directly to that
-backend. Ensure the backend permits the frontend origin through CORS.
+## Quick Start
 
-## Project structure
+### 1. Clone và cài dependency
 
+```bash
+git clone https://github.com/kenzings-ng/admin-fe-angular.git
+cd admin-fe-angular
+npm ci
 ```
+
+Dùng `npm ci` khi clone mới để cài đúng phiên bản trong `package-lock.json`.
+Chỉ dùng `npm install` khi chủ động thay đổi dependency.
+
+### 2. Tạo cấu hình local
+
+macOS/Linux:
+
+```bash
+cp .env.example .env
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Giá trị local tối thiểu:
+
+```dotenv
+API_URL=http://localhost:3000
+```
+
+Sinh file runtime config mà trình duyệt sẽ đọc:
+
+```bash
+npm run config:runtime
+```
+
+Lệnh trên tạo `public/env.js`. Cả `.env` và `public/env.js` đều không được
+commit vào Git.
+
+### 3. Chạy development server
+
+```bash
+npm start -- --port 4201
+```
+
+Mở [http://localhost:4201](http://localhost:4201).
+
+Nếu chỉ chạy riêng admin và cổng `4200` đang trống, có thể dùng `npm start`.
+
+### 4. Đăng nhập admin
+
+Backend tự tạo tài khoản admin từ các biến sau trong `be-nestjs/.env` ở lần
+khởi động đầu tiên:
+
+```dotenv
+ADMIN_EMAIL=admin@shop.com
+ADMIN_PASSWORD=change-me
+ADMIN_NAME=Administrator
+```
+
+Hãy dùng đúng email/password đã cấu hình ở backend. Việc đổi các biến sau khi
+tài khoản đã được tạo không tự cập nhật tài khoản cũ trong MongoDB.
+
+## Chạy cả hệ thống
+
+Mở ba terminal:
+
+```bash
+# Terminal 1 — backend
+cd be-nestjs
+npm run start:dev
+```
+
+```bash
+# Terminal 2 — storefront
+cd guest-fe-angular
+npm start
+```
+
+```bash
+# Terminal 3 — admin
+cd admin-fe-angular
+npm start -- --port 4201
+```
+
+Thứ tự khuyến nghị: chạy MongoDB → backend → hai frontend.
+
+## Runtime configuration
+
+`API_URL` được đọc từ `/env.js` trước khi Angular khởi động, không được đóng
+cứng vào bundle. Vì vậy có thể đổi backend URL sau khi build mà không build lại:
+
+```bash
+API_URL=https://api.example.com \
+  npm run config:runtime -- --output dist/admin-fe/browser/env.js
+```
+
+`env.js` được phục vụ công khai. Chỉ đặt thông tin public như API base URL
+trong file này; không đặt password, token hoặc secret.
+
+## Scripts
+
+| Lệnh | Mô tả |
+| --- | --- |
+| `npm start` | Chạy Angular development server ở cổng mặc định `4200`. |
+| `npm start -- --port 4201` | Chạy admin ở cổng khuyến nghị `4201`. |
+| `npm run config:runtime` | Sinh `public/env.js` từ `.env` hoặc process environment. |
+| `npm run build` | Tạo production build trong `dist/admin-fe/browser`. |
+| `npm run watch` | Build development và theo dõi thay đổi. |
+| `npm test -- --watch=false` | Chạy unit test một lần bằng Vitest. |
+| `npm test` | Chạy unit test ở chế độ mặc định của Angular test builder. |
+
+## Build production
+
+```bash
+API_URL=https://api.example.com npm run config:runtime
+npm run build
+```
+
+Output:
+
+```text
+dist/admin-fe/browser
+```
+
+Backend phải cho phép origin của admin qua CORS.
+
+## Cấu trúc dự án
+
+```text
 src/app/
-  core/         models, services (auth, product, token, toast), guards, HTTP interceptor
-  layout/       app shell (sidebar + topbar)
-  features/     auth (login), dashboard, products (list + form)
-  shared/       toast host
+├── core/          # Models, services, guards và HTTP interceptor
+├── features/      # Các màn hình nghiệp vụ được lazy load
+├── layout/        # Sidebar, topbar và app shell
+└── shared/        # UI components, chart và toast dùng chung
 ```
 
-## Development server
+## Xử lý sự cố
 
-To start a local development server, run:
+| Triệu chứng | Cách kiểm tra |
+| --- | --- |
+| Trang trắng hoặc lỗi `Missing API_URL runtime configuration` | Chạy `npm run config:runtime` và kiểm tra `public/env.js`. |
+| `EADDRINUSE: 4200` | Chạy admin bằng `npm start -- --port 4201`. |
+| Request báo `ERR_CONNECTION_REFUSED` | Kiểm tra backend đang chạy tại URL trong `.env`. |
+| `401 Unauthorized` | Đăng nhập lại; access token có thể đã hết hạn. |
+| Bị đăng xuất ngay sau login | Tài khoản không có role `admin` hoặc backend trả session không hợp lệ. |
+| Cài dependency báo `Unsupported engine` | Đổi sang phiên bản Node.js được liệt kê ở phần yêu cầu môi trường. |
+| Đổi `API_URL` nhưng app vẫn gọi URL cũ | Chạy lại `npm run config:runtime` và reload trình duyệt. |
 
-```bash
-ng serve
-```
+## Nguyên tắc bảo mật
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Không commit `.env`, `public/env.js`, token hoặc credential.
+- Không đặt secret trong Angular source; mọi mã frontend đều có thể được người
+  dùng tải xuống và đọc.
+- Không dùng tài khoản/password mẫu trong production.
